@@ -1,62 +1,77 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package AutobusRest;
 
+import DAO.AutobusesDAO;
+import DAO.IAutobusesDAO;
 import Model.Autobus;
+import Model.Ruta;
 import com.google.gson.Gson;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
-/**
- * REST Web Service
- *
- * @author nrpc
- */
 @Path("autobus")
 public class AutobusRecurso {
 
-    @Context
-    private UriInfo context;
+    private final IAutobusesDAO autobusesDAO;
 
-    /**
-     * Creates a new instance of AutobusRecurso
-     */
     public AutobusRecurso() {
+        autobusesDAO = new AutobusesDAO();
     }
 
-    /**
-     * Retrieves representation of an instance of AutobusRest.AutobusRecurso
-     *
-     * @param autobus
-     * @return an instance of java.lang.String
-     */
     @GET
+    @Path("getValidacionInicioSesion/{autobus}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getEstadoInicioSesion(String autobus) {
-        boolean inicioCorrecto = false;
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String getValidacionInicioSesion(@PathParam("autobus") String autobus) {
         Gson gson = new Gson();
-        Autobus prueba = gson.fromJson(autobus, Autobus.class);
-        
-        return String.valueOf(inicioCorrecto);
+        Autobus auto = gson.fromJson(autobus, Autobus.class);
+        return gson.toJson(autobusesDAO.getValidacionInicioSesion(auto));
     }
 
-    /**
-     * PUT method for updating or creating an instance of AutobusRecurso
-     *
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void anadir(String autobus) {
-        // FALTA HACER TODOS LOS METODOS;
+    @GET
+    @Path("getUltimasPosicionesAutobuses")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getUltimasPosicionesAutobuses() {
+        return new Gson().toJson(autobusesDAO.getUltimasPosicionesAutobuses());
     }
+
+    @GET
+    @Path("obtenerRutaCompletaPorIdSesion/{matricula}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String obtenerRutaCompletaPorIdSesion(@PathParam("matricula") String matricula) {
+        return new Gson().toJson(autobusesDAO.getRutaCompletaPorIdSesion(matricula));
+    }
+
+    @GET
+    @Path("getTodasLasRutasPorMatricula/{matricula}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getTodasLasRutasPorMatricula(@PathParam("matricula") String matricula) {
+        return new Gson().toJson(autobusesDAO.getTodasLasRutasPorMatricula(matricula));
+    }
+//
+//    @POST
+//    @Path("cerrarSesion/{matricula}")
+//    public void cerrarSesion(@PathParam("matricula") String matricula) {
+//        autobusesDAO.cerrarSesion(matricula);
+//    }
+//
+    @POST
+    @Path("{trozoRuta}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void insertarLocalizacion(@PathParam("trozoRuta") String trozoRuta) {
+        Ruta ruta = new Gson().fromJson(trozoRuta, Ruta.class);
+        autobusesDAO.insertarLocalizacion(ruta);
+    }
+//
+//    @POST
+//    @Path("insertarAutobus/")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void insertarAutobus(String autobus) {
+//        Autobus auto = new Gson().fromJson(autobus, Autobus.class);
+//        autobusesDAO.insertarAutobus(auto);
+//    }
 }

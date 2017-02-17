@@ -3,8 +3,6 @@ package BD;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Conexio {
 
@@ -23,9 +21,18 @@ public class Conexio {
     private void obtenerInstancia() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            conexio = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "JOANCM", "JOAN95");
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Conexio.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                // Aquí ira desde el cole
+                conexio = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "JOANCM", "JOAN95");
+            } catch (SQLException sql) {
+                try {
+                    conexio = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "JOANCM", "JOAN95");
+                } catch (SQLException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            System.err.println(ex.getMessage());
         }
     }
 }

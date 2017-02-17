@@ -22,13 +22,11 @@ public class Conexio {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             try {
-                // Aquí ira desde el cole
-                conexio = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "JOANCM", "JOAN95");
+                conexio = DriverManager.getConnection("jdbc:oracle:thin:@192.168.180.10:1521:INSLAFERRERI", "JOANCM", "JOAN95");
             } catch (SQLException sql) {
                 try {
                     conexio = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "JOANCM", "JOAN95");
                 } catch (SQLException e) {
-                    System.err.println(e.getMessage());
                 }
             }
         } catch (ClassNotFoundException ex) {

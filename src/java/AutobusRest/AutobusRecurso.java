@@ -30,8 +30,7 @@ public class AutobusRecurso {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void insertarAutobus(String autobus) {
-        Autobus auto = new Gson().fromJson(autobus, Autobus.class);
-        autobusesDAO.insertarAutobus(auto);
+        autobusesDAO.insertarAutobus(new Gson().fromJson(autobus, Autobus.class));
     }
 
 }

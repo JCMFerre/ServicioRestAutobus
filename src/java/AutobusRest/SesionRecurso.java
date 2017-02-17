@@ -27,8 +27,7 @@ public class SesionRecurso {
     @Consumes(MediaType.APPLICATION_JSON)
     public String getValidacionInicioSesion(@PathParam("autobus") String autobus) {
         Gson gson = new Gson();
-        Autobus auto = gson.fromJson(autobus, Autobus.class);
-        return gson.toJson(autobusesDAO.getValidacionInicioSesion(auto));
+        return gson.toJson(autobusesDAO.getValidacionInicioSesion(gson.fromJson(autobus, Autobus.class)));
     }
 
     @POST

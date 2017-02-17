@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutobusesDAO implements IAutobusesDAO {
-
+    
     private final Connection conexion;
-
+    
     public AutobusesDAO() {
         conexion = new Conexio().getConexioOracle();
     }
-
+    
     @Override
     public List<Ruta> getUltimasPosicionesAutobuses() {
         String query = "SELECT * FROM " + TABLA_RUTAS + " WHERE (" + KEY_MATRICULA_RUTAS + ", " + KEY_FECHA_RUTAS
@@ -25,7 +25,7 @@ public class AutobusesDAO implements IAutobusesDAO {
                 + " GROUP BY " + KEY_MATRICULA_RUTAS + ")";
         return ejecutarPreparedStatementRutas(query, false, null);
     }
-
+    
     @Override
     public List<Ruta> getTodasLasRutasPorMatricula(String matricula) {
         String query = "SELECT * FROM " + TABLA_RUTAS + " WHERE " + KEY_MATRICULA_RUTAS + " = ? AND "
@@ -33,14 +33,14 @@ public class AutobusesDAO implements IAutobusesDAO {
                 + " GROUP BY " + KEY_IDSESION_RUTAS + ")";
         return ejecutarPreparedStatementRutas(query, true, matricula);
     }
-
+    
     @Override
     public List<Ruta> getRutaCompletaPorIdSesion(String idSesion) {
         String query = "SELECT * FROM " + TABLA_RUTAS + " WHERE UPPER(" + KEY_IDSESION_RUTAS + ") = ? ORDER BY "
                 + KEY_FECHA_RUTAS;
         return ejecutarPreparedStatementRutas(query, true, idSesion);
     }
-
+    
     @Override
     public void insertarLocalizacion(Ruta trozoRuta) {
         String query = "INSERT INTO " + TABLA_RUTAS + " VALUES(?, ?, ?, ?, ?)";
@@ -48,30 +48,30 @@ public class AutobusesDAO implements IAutobusesDAO {
             trozoRuta.getMatricula().toUpperCase(), trozoRuta.getFecha()},
                 new double[]{trozoRuta.getLatitud(), trozoRuta.getLongitud()});
     }
-
+    
     @Override
     public void insertarAutobus(Autobus autobus) {
         String query = "INSERT INTO " + TABLA_USUARIOS + " VALUES (?,?,?)";
         ejecutarQuery(query, new String[]{autobus.getMatricula().toUpperCase(),
             autobus.getContrasena(), "N"}, null);
     }
-
+    
     private void cambiarEstadoUsuario(String matricula, boolean activo) {
         String query = "UPDATE " + TABLA_USUARIOS + " SET " + KEY_ESTADO_USUARIOS + " = ? WHERE "
                 + KEY_MATRICULA_USUARIOS + " = ?";
         ejecutarQuery(query, new String[]{(activo ? "S" : "N"), matricula.toUpperCase()}, null);
     }
-
+    
     private Ruta obtenerRutaPorRs(ResultSet rs) throws SQLException {
         return new Ruta(rs.getString(KEY_IDSESION_RUTAS), rs.getString(KEY_MATRICULA_RUTAS), rs.getString(KEY_FECHA_RUTAS),
                 rs.getDouble(KEY_LATITUD_RUTAS), rs.getDouble(KEY_LONGITUD_RUTAS));
     }
-
+    
     @Override
     public void cerrarSesion(String matricula) {
         cambiarEstadoUsuario(matricula, false);
     }
-
+    
     private void ejecutarQuery(String query, String[] campos, double[] camposDouble) {
         try (PreparedStatement ps = conexion.prepareStatement(query)) {
             prepararPsCampos(campos, ps, camposDouble);
@@ -80,7 +80,7 @@ public class AutobusesDAO implements IAutobusesDAO {
             System.err.println(ex.getMessage());
         }
     }
-
+    
     private void prepararPsCampos(String[] campos, final PreparedStatement ps, double[] camposDouble) throws SQLException {
         int contador = 1;
         for (String campo : campos) {
@@ -92,7 +92,7 @@ public class AutobusesDAO implements IAutobusesDAO {
             }
         }
     }
-
+    
     private List<Ruta> ejecutarPreparedStatementRutas(String query, boolean ponerString, String campo) {
         List<Ruta> rutas = new ArrayList<>();
         try (PreparedStatement ps = conexion.prepareStatement(query)) {
@@ -108,7 +108,7 @@ public class AutobusesDAO implements IAutobusesDAO {
         }
         return rutas;
     }
-
+    
     @Override
     public boolean getValidacionInicioSesion(Autobus autobus) {
         int comprobacion = 0;
@@ -128,5 +128,25 @@ public class AutobusesDAO implements IAutobusesDAO {
             System.err.println(ex.getMessage());
         }
         return comprobacion == 2;
+    }
+    
+    @Override
+    public List<Autobus> getTodosLosAutobuses() {
+        List<Autobus> autobuses = new ArrayList<>();
+        String query = "SELECT * FROM " + TABLA_USUARIOS;
+        try (PreparedStatement ps = conexion.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                autobuses.add(obtenerAutobusPorRs(rs));
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return autobuses;
+    }
+    
+    private Autobus obtenerAutobusPorRs(ResultSet rs) throws SQLException {
+        return new Autobus(rs.getString(KEY_MATRICULA_USUARIOS),
+                rs.getString(KEY_CONTRASENA_USUARIOS), rs.getString(KEY_ESTADO_USUARIOS).equals("S"));
     }
 }

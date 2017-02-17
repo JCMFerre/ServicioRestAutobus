@@ -18,6 +18,12 @@ public interface IAutobusesDAO {
     String KEY_LATITUD_RUTAS = "LATITUD";
     String KEY_LONGITUD_RUTAS = "LONGITUD";
 
+    void insertarAutobus(Autobus autobus);
+
+    List<Autobus> getTodosLosAutobuses();
+
+    void insertarLocalizacion(Ruta trozoRuta);
+
     List<Ruta> getUltimasPosicionesAutobuses();
 
     List<Ruta> getTodasLasRutasPorMatricula(String matricula);
@@ -27,9 +33,4 @@ public interface IAutobusesDAO {
     boolean getValidacionInicioSesion(Autobus autobus);
 
     void cerrarSesion(String matricula);
-
-    void insertarLocalizacion(Ruta trozoRuta);
-
-    void insertarAutobus(Autobus autobus);
-
 }

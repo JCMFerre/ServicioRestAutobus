@@ -3,9 +3,12 @@ package BD;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+/**
+ * Clase que gestiona la conexión con la BD de oracle.
+ *
+ * @author Joan Creus Martin.
+ */
 public class Conexio {
 
     private Connection conexio;
@@ -13,6 +16,11 @@ public class Conexio {
     public Conexio() {
     }
 
+    /**
+     * Devuelve la conexión a Oracle.
+     *
+     * @return Connection lista para ser utilizada.
+     */
     public Connection getConexioOracle() {
         if (conexio == null) {
             obtenerInstancia();
@@ -25,6 +33,10 @@ public class Conexio {
         return conexio;
     }
 
+    /**
+     * Intenta conectarse como si estuviera en el instituto, si salta al catch,
+     * se conecta desde fuera, y si no ya apaga y vámonos... :)
+     */
     private void obtenerInstancia() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");

@@ -2,6 +2,7 @@ package AutobusRest;
 
 import DAO.AutobusesDAO;
 import DAO.IAutobusesDAO;
+import Model.Autobus;
 import Model.Ruta;
 import com.google.gson.Gson;
 import javax.ws.rs.Consumes;
@@ -29,17 +30,13 @@ public class RutasRecurso {
     }
 
     @GET
-    @Path("rutaCompleta/{idSesion}")
+    @Path("todasLasRutas/{autobus}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String obtenerRutaCompletaPorIdSesion(@PathParam("idSesion") String idSesion) {
-        return new Gson().toJson(autobusesDAO.getRutaCompletaPorIdSesion(idSesion));
-    }
-
-    @GET
-    @Path("todasLasRutas/{matricula}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getTodasLasRutasPorMatricula(@PathParam("matricula") String matricula) {
-        return new Gson().toJson(autobusesDAO.getTodasLasRutasPorMatricula(matricula));
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String getTodasLasRutasPorMatricula(@PathParam("autobus") String autobus) {
+        Gson gson = new Gson();
+        return gson.toJson(autobusesDAO
+                .getTodasLasRutasPorMatricula(gson.fromJson(autobus, Autobus.class).getMatricula()));
     }
 
     @POST

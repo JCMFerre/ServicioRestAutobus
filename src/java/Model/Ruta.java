@@ -59,4 +59,9 @@ public class Ruta {
         this.longitud = longitud;
     }
 
+    @Override
+    public String toString() {
+        return "Ruta{" + "idSesion=" + idSesion + ", matricula=" + matricula + ", fecha=" + fecha + ", latitud=" + latitud + ", longitud=" + longitud + '}';
+    }
+
 }

@@ -32,7 +32,7 @@ public class SesionRecurso {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void cerrarSesion(String matricula) {
-        autobusesDAO.cerrarSesion(matricula);
+    public void cerrarSesion(String autobusJson) {
+        autobusesDAO.cerrarSesion(new Gson().fromJson(autobusJson, Autobus.class).getMatricula());
     }
 }

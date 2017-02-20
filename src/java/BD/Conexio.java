@@ -3,6 +3,8 @@ package BD;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Conexio {
 
@@ -14,6 +16,11 @@ public class Conexio {
     public Connection getConexioOracle() {
         if (conexio == null) {
             obtenerInstancia();
+            try {
+                conexio.setAutoCommit(true);
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
         }
         return conexio;
     }

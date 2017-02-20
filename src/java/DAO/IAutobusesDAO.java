@@ -28,8 +28,6 @@ public interface IAutobusesDAO {
 
     List<Ruta> getTodasLasRutasPorMatricula(String matricula);
 
-    List<Ruta> getRutaCompletaPorIdSesion(String idSesion);
-
     boolean getValidacionInicioSesion(Autobus autobus);
 
     void cerrarSesion(String matricula);
